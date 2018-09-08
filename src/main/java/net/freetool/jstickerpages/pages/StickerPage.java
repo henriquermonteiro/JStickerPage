@@ -71,8 +71,8 @@ public class StickerPage implements Printable{
         Font headerFont = new Font("Serif", Font.BOLD, 18);
         Font textFont = new Font("Serif", Font.PLAIN, 12);
 
-        int w = (int) pf.getImageableWidth();
-        int h = (int) pf.getImageableHeight();
+        int w = (int) pf.getImageableWidth(); // Valid page width; Inches * 72
+        int h = (int) pf.getImageableHeight(); // Valid page height; Inches * 72
 
         // Draw outside box
         g2D.setPaint(Color.BLACK);
@@ -85,8 +85,8 @@ public class StickerPage implements Printable{
         int boxX, boxY;
 
         // Define sticker box sizes 
-        double boxWAx = 2 + (1.0 / 4.0);
-        double boxHAx = 1 + (9.0 / 16.0);
+        double boxWAx = 2 + (1.0 / 4.0); // 2.25 of an inch
+        double boxHAx = 1 + (9.0 / 16.0); // 1.5625 of an inch
 
         // Convert sticker box sizes to actual print page size
         double boxW = boxWAx * (72.0);
@@ -94,10 +94,10 @@ public class StickerPage implements Printable{
         double box2H = 2 * boxH;
 
         // Define minimal box gaps
-        double baseVGap = (3.0 / 16.0) * (72.0);
-        double baseHGap = (3.0 / 16.0) * (72.0);
+        double baseVGap = (3.0 / 16.0) * (72.0); // 3/16 of a inch
+        double baseHGap = (3.0 / 16.0) * (72.0); // 3/16 of a inch
 
-        // Define number os Lines and columns
+        // Define number of Lines and columns
         int columns = (int) ((w - baseHGap) / (boxW + baseHGap));
         int lines = (int) (((h - headerHeight) - baseVGap) / (box2H + baseVGap));
 
@@ -123,13 +123,15 @@ public class StickerPage implements Printable{
 
         for (int l = 0; l < lines; l++) {
             for (int c = 0; c < columns; c++) {
+                // Draw double box
                 g2D.setStroke(boxStroke);
                 g2D.drawRect((int) (hGap + (c * (boxW + hGap))), (headerHeight) + (int) (vGap + (l * (box2H + vGap))), (int) boxW, (int) box2H);
                 
+                // Draw box middle line
                 g2D.setStroke(lineStroke);
                 g2D.drawLine((int) (hGap + (c * (boxW + hGap))), (headerHeight) + (int) (vGap + (l * (box2H + vGap)) + boxH), (int) (hGap + (c * (boxW + hGap))) + (int) boxW, (headerHeight) + (int) (vGap + (l * (box2H + vGap)) + boxH));
                 
-                
+                // Draw date to the boxes
                 g2D.setStroke(textStroke);
                 int toDrawHeight = g2D.getFontMetrics().getHeight() - g2D.getFontMetrics().getLeading();
                 
@@ -145,8 +147,10 @@ public class StickerPage implements Printable{
             }
         }
 
+        // Go back one day
         previousDate();
 
+        // Draw title of page
         g2D.setFont(headerFont);
 
         header = header.concat(" - ").concat(currentDate.format(format));
@@ -156,6 +160,7 @@ public class StickerPage implements Printable{
         g2D.setStroke(new BasicStroke(1.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
         g2D.drawString(header, (w / 2) - (headerWidth / 2), 20);
 
+        // Define as a valid page
         return Printable.PAGE_EXISTS;
     }
 }
